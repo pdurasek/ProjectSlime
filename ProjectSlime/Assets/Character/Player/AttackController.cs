@@ -5,74 +5,91 @@ using UnityEngine;
 
 public class AttackController : MonoBehaviour
 {
-    private PlayerController playerController;
-    private Animator animator;
-    private List<GameObject> nearEnemies = new List<GameObject>();
-	// Use this for initialization
-	void Start () {
-        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-	    animator = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
+   private PlayerController playerController;
+   private Animator animator;
+   private List<GameObject> nearEnemies = new List<GameObject>();
+   [SerializeField] private int playerDamage = 5;
+   private float timeSinceLastAttack = 0f;
 
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            AttackMelee();
-            //animator.SetBool("isAttacking", false);
-           // Debug.Log(nearEnemies.Count);
-        }
-    }
+   void Start()
+   {
+      playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+      animator = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
+   }
 
-    private void AttackMelee()
-    {
-        if (playerController.lastMoveY == 1)
-        {
-             animator.SetFloat("attackValue1", 1f);
-            animator.SetFloat("attackValue2", 1f);
-        }
-        else if (playerController.lastMoveY == -1)
-        {
-            animator.SetFloat("attackValue1", -1f);
-            animator.SetFloat("attackValue2", -1f);
-        }
-        else if (playerController.lastMoveY == 0 && playerController.lastMoveX == -1)
-        {
-            animator.SetFloat("attackValue1", -1f);
-            animator.SetFloat("attackValue2", 0f);
-        }
-        else if (playerController.lastMoveY == 0 && playerController.lastMoveX == 1)
-        {
-            animator.SetFloat("attackValue1", 1f);
-            animator.SetFloat("attackValue2", 0f);
-        }
+   void Update()
+   {
+      timeSinceLastAttack += Time.deltaTime;
 
-        for (int i = 0; i < nearEnemies.Count; ++i)
-        {
-            Vector3 enemyPos = nearEnemies[i].transform.position;
+      if (Input.GetKey(KeyCode.Space) && timeSinceLastAttack > 0.25) // TODO clicks twice for some reason
+      {
+         AttackMelee();
+         timeSinceLastAttack = 0;
+         // Debug.Log(nearEnemies.Count);
+      }
+   }
 
-        }
+   private void AttackMelee()
+   {
+      List<GameObject> currentNearEnemies = new List<GameObject>(nearEnemies);
 
-        animator.SetTrigger("isAttacking");
-    }
+      if (playerController.lastMoveY == 1)
+      {
+         animator.SetFloat("attackValue1", 1f);
+         animator.SetFloat("attackValue2", 1f);
+      }
+      else if (playerController.lastMoveY == -1)
+      {
+         animator.SetFloat("attackValue1", -1f);
+         animator.SetFloat("attackValue2", -1f);
+      }
+      else if (playerController.lastMoveY == 0 && playerController.lastMoveX == -1)
+      {
+         animator.SetFloat("attackValue1", -1f);
+         animator.SetFloat("attackValue2", 0f);
+      }
+      else if (playerController.lastMoveY == 0 && playerController.lastMoveX == 1)
+      {
+         animator.SetFloat("attackValue1", 1f);
+         animator.SetFloat("attackValue2", 0f);
+      }
 
-    void OnTriggerEnter2D(Collider2D collider)
-    {
-        if (collider.gameObject.tag.Equals("Enemy"))
-        {
-            nearEnemies.Add(collider.gameObject);
-            //Debug.Log("Adding: " + collider.gameObject.name);
-        }
-    }
+      animator.SetTrigger("triggerAttack");
 
-    void OnTriggerExit2D(Collider2D collider)
-    {
-        if (collider.gameObject.tag.Equals("Enemy"))
-        {
-            nearEnemies.Remove(collider.gameObject);
-            //Debug.Log("Remove: " + collider.gameObject.name);
-        }
-    }
+      for (int i = 0; i < currentNearEnemies.Count; ++i)
+      {
+         Vector3 enemyPos = currentNearEnemies[i].transform.position;
+
+         if (CheckForHit(enemyPos))
+         {
+            currentNearEnemies[i].GetComponent<Health>().TakeDamage(playerDamage);
+         }
+      }
+   }
+
+   private bool CheckForHit(Vector3 enemyPos)
+   {
+      return (playerController.lastMoveY == 1 && enemyPos.y >= transform.position.y // enemy above player when player attacks up
+         || playerController.lastMoveY == -1 && enemyPos.y <= transform.position.y // enemy below player when player attacks down
+         || playerController.lastMoveY == 0 && playerController.lastMoveX == -1 && enemyPos.x <= transform.position.x // enemy left of player when player attacks left
+         || playerController.lastMoveY == 0 && playerController.lastMoveX == 1 && enemyPos.x >= transform.position.x); // enemy right of player when player attacks right
+   }
+
+   void OnTriggerEnter2D(Collider2D collider)
+   {
+      if (collider.gameObject.tag.Equals("Enemy"))
+      {
+         nearEnemies.Add(collider.gameObject);
+         //Debug.Log("Adding: " + collider.gameObject.name);
+      }
+   }
+
+   void OnTriggerExit2D(Collider2D collider)
+   {
+      if (collider.gameObject.tag.Equals("Enemy"))
+      {
+         nearEnemies.Remove(collider.gameObject);
+         //Debug.Log("Remove: " + collider.gameObject.name);
+      }
+   }
 }

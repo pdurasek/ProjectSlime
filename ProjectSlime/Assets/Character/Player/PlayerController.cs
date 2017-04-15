@@ -38,34 +38,6 @@ public class PlayerController : MonoBehaviour {
         }
 
         rigidni.MovePosition(rigidni.position + move_vector * Time.deltaTime * movementSpeed);
-        
-        
-        //if (Input.GetKeyDown(KeyCode.W))
-	    //{
-	    //    transform.Translate(new Vector3(0, movementSpeed * Time.deltaTime, 0));
-	    //    //animator.SetBool("isMovingUp", true);
-	    //}
-	    //else
-	    //{
-     //       //animator.SetBool("isMovingUp", false);
-     //   }
-        //else if (Input.GetKeyDown(KeyCode.A))
-        //{
-        //    animator.SetBool("isMovingLeft", true);
-        //}
-        //else if (Input.GetKeyDown(KeyCode.S))
-        //{
-        //    animator.SetBool("isMovingDown", true);
-        //}
-        //else if (Input.GetKeyDown(KeyCode.D))
-        //{
-        //    animator.SetBool("isMovingRight", true);
-        //}
-
-        //animator.SetBool("isMovingUp", false);
-        //animator.SetBool("isMovingLeft", false);
-        //animator.SetBool("isMovingDown", false);
-        //animator.SetBool("isMovingRight", false);
     }
 
     void OnCollisionEnter2D(Collision2D collision2)

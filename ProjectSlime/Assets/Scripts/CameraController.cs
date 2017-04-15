@@ -8,12 +8,11 @@ public class CameraController : MonoBehaviour
     private GameObject player;
     [SerializeField] private int camera_x_maxMove = 0;
     [SerializeField] private int camera_y_maxMove = 4;
-    // Use this for initialization
+
     void Start () {
 		player = GameObject.FindGameObjectWithTag("Player");
 	}
 	
-	// Update is called once per frame
 	void Update ()
 	{
 	    //Debug.Log(transform.position.y);
