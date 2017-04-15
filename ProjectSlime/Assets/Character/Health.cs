@@ -7,10 +7,12 @@ public class Health : MonoBehaviour
    [SerializeField] private int maxHp = 100;
 
    private int currentHp;
+   private Animator animator;
 
    void Start()
    {
       currentHp = maxHp;
+      animator = GetComponent<Animator>();
    }
 
    void Update()
@@ -24,9 +26,22 @@ public class Health : MonoBehaviour
 
       if (currentHp <= 0)
       {
-         Destroy(gameObject);
+         if (GetComponent<PlayerController>()) 
+         {
+            // TODO: game over screen
+            Destroy(gameObject);
+         }
+         else
+         {
+            animator.Play("Death");
+         }
       }
 
-      Debug.Log(this + " took " + damage + " damage");
+      //Debug.Log(this + " took " + damage + " damage");
+   }
+
+   public void DeleteGameObject()
+   {
+      Destroy(gameObject);
    }
 }

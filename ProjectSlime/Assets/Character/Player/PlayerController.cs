@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     private Animator animator;
-    private Rigidbody2D rigidni;
+    private Rigidbody2D playerRigidbody;
     [SerializeField] private float movementSpeed = 2f;
 
     public float lastMoveY = 0;
@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
 	void Start ()
 	{
 	    animator = GetComponent<Animator>();
-	    rigidni = GetComponent<Rigidbody2D>();
+	    playerRigidbody = GetComponent<Rigidbody2D>();
 
 	}
 	
@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour {
             animator.SetBool("isMoving", false);
         }
 
-        rigidni.MovePosition(rigidni.position + move_vector * Time.deltaTime * movementSpeed);
+        playerRigidbody.MovePosition(playerRigidbody.position + move_vector * Time.deltaTime * movementSpeed);
     }
 
     void OnCollisionEnter2D(Collision2D collision2)

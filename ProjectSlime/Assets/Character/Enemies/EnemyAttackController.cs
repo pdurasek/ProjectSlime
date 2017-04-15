@@ -4,27 +4,25 @@ using UnityEngine;
 
 public class EnemyAttackController : MonoBehaviour
 {
-   private EnemyController controller;
    private Animator animator;
    [SerializeField] private int damage = 5;
 
    void Start()
    {
-      controller = GetComponentInParent<EnemyController>();
       animator = GetComponentInParent<Animator>();
    }
 
    void Update()
    {
 
-   }
+   } 
 
    void OnTriggerEnter2D(Collider2D collider)
    {
       if (collider.GetComponent<PlayerController>())
       {
-         Debug.Log("attack playah");
-         controller.AttackMelee(collider, damage);
+         //Debug.Log("attack playah");
+         animator.SetBool("isAttacking", true);
       }
    }
 
@@ -32,8 +30,14 @@ public class EnemyAttackController : MonoBehaviour
    {
       if (collider.GetComponent<PlayerController>())
       {
-         Debug.Log("playah got away");
+         //Debug.Log("playah got away");
          animator.SetBool("isAttacking", false);
       }
+   }
+
+   public void DoMeleeDamage()
+   {
+      //Debug.Log("I iz attack");
+      GameObject.FindGameObjectWithTag("Player").GetComponent<Health>().TakeDamage(damage);
    }
 }
