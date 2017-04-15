@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour {
     private Animator animator;
     private Rigidbody2D rigidni;
     [SerializeField] private float movementSpeed = 2f;
+
+    public float lastMoveY = 0;
+    public float lastMoveX = 0;
 	// Use this for initialization
 	void Start ()
 	{
@@ -25,6 +28,9 @@ public class PlayerController : MonoBehaviour {
             animator.SetBool("isMoving", true);
             animator.SetFloat("input_x", move_vector.x);
             animator.SetFloat("input_y", move_vector.y);
+
+            lastMoveX = move_vector.x;
+            lastMoveY = move_vector.y;
         }
         else
         {
@@ -64,6 +70,6 @@ public class PlayerController : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D collision2)
     {
-        Debug.Log("collison" + collision2);
+        //Debug.Log("collison" + collision2);
     }
 }
