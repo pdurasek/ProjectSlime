@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+       DontDestroyOnLoad(gameObject);
 	    animator = GetComponent<Animator>();
 	    playerRigidbody = GetComponent<Rigidbody2D>();
 

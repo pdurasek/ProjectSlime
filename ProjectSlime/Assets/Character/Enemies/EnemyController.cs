@@ -24,32 +24,33 @@ public class EnemyController : MonoBehaviour
    void Update()
    {
       // TODO: fix enemy collision so they can't move each other (and player as well, current fix for player is enemies having much greater mass than the player)
+      // TODO: put movement in FixedUpdate()
       timeSinceLastRandomMove += Time.deltaTime;
       float distanceFromPlayer = Vector2.Distance(transform.position, player.transform.position);
 
       if (distanceFromPlayer > aggroRange && timeSinceLastRandomMove > 0.1)
       {
-         moveRandom();
+         MoveRandom();
       }
-      else if (distanceFromPlayer <= aggroRange && !isAttacking())
+      else if (distanceFromPlayer <= aggroRange && !IsAttacking())
       {
-         moveToPlayer();
+         MoveToPlayer();
       }
    }
 
-   private bool isAttacking()
+   private bool IsAttacking()
    {
       return (animator.GetBool("isAttacking") || animator.GetCurrentAnimatorStateInfo(0).IsName("BlobAttack"));
    }
 
-   private void moveRandom()
+   private void MoveRandom()
    {
       Vector2 randomVector = new Vector2(UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f));
       enemyRigidbody.MovePosition(enemyRigidbody.position + randomVector * Time.deltaTime * movementSpeed);
       timeSinceLastRandomMove = 0;
    }
 
-   private void moveToPlayer()
+   private void MoveToPlayer()
    {
       Vector2 targetLocation = Vector2.MoveTowards(enemyRigidbody.position, player.transform.position, Time.deltaTime * movementSpeed / 5.0f);
       enemyRigidbody.MovePosition(targetLocation);
