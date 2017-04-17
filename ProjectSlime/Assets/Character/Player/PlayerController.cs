@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
+   // TODO put movement in FixedUpdate
 	void Update ()
     {
 	    Vector2 move_vector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));

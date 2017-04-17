@@ -23,6 +23,11 @@ public class EnemyAttackController : MonoBehaviour
       {
          //Debug.Log("attack playah");
          animator.SetBool("isAttacking", true);
+
+         if (animator.HasState(0, Animator.StringToHash("Move")))
+         {
+            animator.SetBool("isMoving", false);
+         }
       }
    }
 
@@ -31,7 +36,7 @@ public class EnemyAttackController : MonoBehaviour
       if (collider.GetComponent<PlayerController>())
       {
          //Debug.Log("playah got away");
-         animator.SetBool("isAttacking", false);
+         animator.SetBool("isAttacking", false);        
       }
    }
 

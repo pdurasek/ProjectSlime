@@ -37,7 +37,7 @@ public class Health : MonoBehaviour
          }
       }
 
-      //Debug.Log(this + " took " + damage + " damage");
+      Debug.Log(this + " took " + damage + " damage");
    }
 
    public void DeleteGameObject()
