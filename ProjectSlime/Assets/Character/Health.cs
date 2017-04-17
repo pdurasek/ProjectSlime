@@ -8,6 +8,7 @@ public class Health : MonoBehaviour
 
    private int currentHp;
    private Animator animator;
+   private LevelManager levelManager;
 
    void Start()
    {
@@ -30,6 +31,7 @@ public class Health : MonoBehaviour
          {
             // TODO: game over screen
             Destroy(gameObject);
+            GameObject.FindObjectOfType<LevelManager>().LoadLevel("Level 01");
          }
          else
          {

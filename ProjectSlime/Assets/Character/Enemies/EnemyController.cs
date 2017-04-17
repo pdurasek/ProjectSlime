@@ -13,7 +13,7 @@ public class EnemyController : MonoBehaviour
    [SerializeField] private float aggroRange = 10f;
    [SerializeField] private float randomMoveCooldown = 0.1f;
    private float timeSinceLastRandomMove = 0;
-   public bool reachedTargetLocation = true;
+   public bool reachedRandomTargetLocation = true;
    private Vector2 currentTargetLocation;
 
    void Start()
@@ -31,7 +31,7 @@ public class EnemyController : MonoBehaviour
       timeSinceLastRandomMove += Time.deltaTime;
       float distanceFromPlayer = Vector2.Distance(transform.position, player.transform.position);
 
-      if (distanceFromPlayer > aggroRange && (timeSinceLastRandomMove > randomMoveCooldown || !reachedTargetLocation))
+      if (distanceFromPlayer > aggroRange && (timeSinceLastRandomMove > randomMoveCooldown || !reachedRandomTargetLocation))
       {
          MoveRandom();
       }
@@ -39,7 +39,7 @@ public class EnemyController : MonoBehaviour
       {
          MoveToPlayer();
       }
-      else if (animator.HasState(0, Animator.StringToHash("Move")) && reachedTargetLocation)
+      else if (animator.HasState(0, Animator.StringToHash("Move")) && reachedRandomTargetLocation)
       {
          animator.SetBool("isMoving", false);
       }
@@ -52,7 +52,7 @@ public class EnemyController : MonoBehaviour
 
    private void MoveRandom()
    {    
-      if (reachedTargetLocation)
+      if (reachedRandomTargetLocation)
       {
          Vector2 newRandomVector = new Vector2(UnityEngine.Random.Range(-1.0f, 1.0f), UnityEngine.Random.Range(-1.0f, 1.0f));
          Vector2 newTargetLocation = enemyRigidbody.position + newRandomVector; //* Time.fixedDeltaTime * movementSpeed;
@@ -79,11 +79,12 @@ public class EnemyController : MonoBehaviour
       //   animator.SetFloat("input_y", currentRandomVector.y);
       //}
 
-      reachedTargetLocation = Vector2.Distance(enemyRigidbody.position, currentTargetLocation) < 0.1;
+      reachedRandomTargetLocation = Vector2.Distance(enemyRigidbody.position, currentTargetLocation) < 0.1;
    }
 
    private void MoveToPlayer()
    {
+      reachedRandomTargetLocation = true;
       Vector2 targetLocation = Vector2.MoveTowards(enemyRigidbody.position, player.transform.position, Time.fixedDeltaTime * movementSpeed / 5.0f);
       enemyRigidbody.MovePosition(targetLocation);
 
