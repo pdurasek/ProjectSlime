@@ -10,6 +10,17 @@ public class AttackController : MonoBehaviour
    private List<GameObject> nearEnemies = new List<GameObject>();
    [SerializeField] private int playerDamage = 5;
    private float timeSinceLastAttack = 0f;
+   private float currentAbilityTime = 0f;
+
+   private Dictionary<string, IAbility> nameAbility = new Dictionary<string, IAbility>()
+   {
+      {"DashSlash", new DashSlash()}
+   };
+
+   private Dictionary<KeyCode, string> keyAbilityName = new Dictionary<KeyCode, string>()
+   {
+      {KeyCode.LeftShift, "DashSlash"}
+   };
 
    void Start()
    {
@@ -21,11 +32,42 @@ public class AttackController : MonoBehaviour
    {
       timeSinceLastAttack += Time.deltaTime;
 
-      if (Input.GetKey(KeyCode.Space) && timeSinceLastAttack > 0.25) // TODO clicks twice for some reason
+      if (currentAbilityTime > 0)
       {
-         AttackMelee();
-         timeSinceLastAttack = 0;
-         // Debug.Log(nearEnemies.Count);
+         currentAbilityTime -= Time.deltaTime;
+      }
+
+      if (timeSinceLastAttack > 0.25)
+      {
+         if (Input.GetKey(KeyCode.Space) && currentAbilityTime <= 0)
+         {
+            AttackMelee();
+            timeSinceLastAttack = 0;
+         }
+         else
+         {
+            foreach (KeyCode kcode in Enum.GetValues(typeof(KeyCode))) // TODO check only available controls
+            {
+               if (Input.GetKeyDown(kcode))
+               {
+                  DashSlash ability = null;
+                  string abilityName = null;
+                  keyAbilityName.TryGetValue(kcode, out abilityName);
+
+                  if (!string.IsNullOrEmpty(abilityName))
+                  {
+                     ability = (DashSlash)nameAbility[abilityName];
+                  }
+
+                  if (ability != null)
+                  {
+                     ability.CastAbility(gameObject);
+                     currentAbilityTime = ability.abilityDuration;
+                     timeSinceLastAttack = 0;
+                  }
+               }
+            }
+         }
       }
    }
 
@@ -80,7 +122,6 @@ public class AttackController : MonoBehaviour
       if (collider.gameObject.tag.Equals("Enemy"))
       {
          nearEnemies.Add(collider.gameObject);
-         //Debug.Log("Adding: " + collider.gameObject.name);
       }
    }
 
@@ -89,7 +130,6 @@ public class AttackController : MonoBehaviour
       if (collider.gameObject.tag.Equals("Enemy"))
       {
          nearEnemies.Remove(collider.gameObject);
-         //Debug.Log("Remove: " + collider.gameObject.name);
       }
    }
 }
